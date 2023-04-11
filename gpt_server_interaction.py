@@ -1,11 +1,45 @@
-# gpt_server_interaction.py
-
 import openai
 import json
 import subprocess
+import os
 
-# 设置API密钥
-openai.api_key = "your_api_key_here"
+def validate_api_key(api_key):
+    try:
+        openai.api_key = api_key
+        openai.Engine.list()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+def load_config(file_path="config.json"):
+    try:
+        with open(file_path, "r") as f:
+            config = json.load(f)
+            if "api_key" not in config or not config["api_key"] or not validate_api_key(config["api_key"]):
+                while True:
+                    print("API密钥未在配置文件中找到或无效，请输入您的API密钥：")
+                    api_key = input()
+                    if validate_api_key(api_key):
+                        config["api_key"] = api_key
+                        with open(file_path, "w") as f:
+                            json.dump(config, f)
+                        break
+                    else:
+                        print("无效的API密钥，请重新输入。")
+            return config
+    except FileNotFoundError:
+        while True:
+            print("配置文件未找到，请输入您的API密钥：")
+            api_key = input()
+            if validate_api_key(api_key):
+                config = {"api_key": api_key}
+                with open(file_path, "w") as f:
+                    json.dump(config, f)
+                break
+            else:
+                print("无效的API密钥，请重新输入。")
+        return config
 
 def interact_with_gpt(prompt):
     conversation_history = [
@@ -30,6 +64,13 @@ def execute_command(command):
     return stdout.decode('utf-8'), stderr.decode('utf-8')
 
 def main():
+
+    # 加载配置文件
+    config = load_config()
+    # 设置API密钥
+    openai.api_key = config["api_key"]
+ #"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" #config["api_key"]
+
     while True:
         # 获取用户输入
         user_input = input("请输入您的问题或命令（输入'退出'以结束）：")
