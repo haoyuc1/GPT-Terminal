@@ -1,4 +1,5 @@
 # GPT-Terminal
-Let GPT operate server by itself
 
-Most of content is created by GPT itself
+让GPT自己操作电脑
+
+代码和文档主要由GPT自己生成
