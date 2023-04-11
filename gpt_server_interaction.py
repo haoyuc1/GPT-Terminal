@@ -43,14 +43,14 @@ def load_config(file_path="config.json"):
 
 def interact_with_gpt(prompt):
     conversation_history = [
-        {"role": "system", "content": "You are interacting with a server, GPT-4 will generate server commands based on your input. Please output commands in JSON format as follows:\n{\"command\": \"your_command\"}"},
+        {"role": "system", "content": "You are interacting with a server, GPT-4 will generate server commands and chat content based on your input. Please output commands and chat content in JSON format as follows:\n{\"command\": \"your_command\", \"chat\": \"your_chat_content\"}"},
         {"role": "user", "content": prompt}
     ]
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=conversation_history,
-        max_tokens=100,
+        max_tokens=150,
         n=1,
         stop=None,
         temperature=0.5,
@@ -84,10 +84,17 @@ def main():
         print(f"GPT-4生成的JSON: {gpt_response}")  # 打印GPT-4生成的JSON
 
         try:
-            gpt_command_json = json.loads(gpt_response)
-            gpt_command = gpt_command_json["command"]
+            gpt_response_json = json.loads(gpt_response)
+            if "command" in gpt_response_json:
+                gpt_command = gpt_response_json["command"]
+                print(f"GPT-4生成的命令：{gpt_command}")
+
+            if "chat" in gpt_response_json:
+                gpt_chat = gpt_response_json["chat"]
+                print(f"GPT-4回应：{gpt_chat}")
+
         except (json.JSONDecodeError, KeyError):
-            print("GPT-4没有生成有效的JSON格式命令。请尝试其他问题或命令。")
+            print("GPT-4没有生成有效的JSON格式命令或聊天内容。请尝试其他问题或命令。")
             continue
 
         # 执行指令并获取输出
