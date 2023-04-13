@@ -97,14 +97,16 @@ def main():
             print("GPT-4没有生成有效的JSON格式命令或聊天内容。请尝试其他问题或命令。")
             continue
 
-        # 执行指令并获取输出
-        stdout, stderr = execute_command(gpt_command)
+        execute_choice = input(f"您要执行这个命令吗（输入'no'不执行，输入其他任何内容则执行）：{gpt_command}\n")
 
-        # 打印服务器输出
-        print(f"服务器输出：\n{stdout}\n{stderr}")
+        if execute_choice.lower() != "no":
+            stdout, stderr = execute_command(gpt_command)
+            print(f"服务器输出：\n{stdout}\n{stderr}")
+            prompt = f"我刚刚执行了以下命令：\n{gpt_command}\n服务器的输出如下：\n{stdout}\n{stderr}\n请给出回应。"
+        else:
+            print("您选择了不执行该命令。")
+            prompt = f"我没有执行以下命令：\n{gpt_command}\n请给出回应。"
 
-        # 将指令的输出发送给GPT-4并获取回应
-        prompt = f"我刚刚执行了以下命令：\n{gpt_command}\n服务器的输出如下：\n{stdout}\n{stderr}\n请给出回应。"
         gpt_response = interact_with_gpt(prompt)
 
         # 打印GPT-4的回应
