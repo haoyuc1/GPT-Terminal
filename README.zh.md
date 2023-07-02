@@ -16,7 +16,16 @@
 2. 运行 Python 脚本：`python server_interaction.py`
 3. 在提示时提供你的 GPT-4 API 密钥。
 
+## 功能
+
 程序将引导您完成交互过程，允许您输入问题或命令并从 GPT-4 接收响应。如果 GPT-4 生成服务器命令，您可以决定是否执行它。
+
+1. 读取输出
+2. 创建文件
+3. 编辑文件
+4. 运行代码
+
+
 
 [English README](README.md)
 
